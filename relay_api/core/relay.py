@@ -22,5 +22,8 @@ class relay():
     def off(self):
         GPIO.output(self.gpio_num, GPIO.LOW)
 
+    def get_state(self):
+        return GPIO.input(self.gpio_num)
+
     def cleanup(self):
         GPIO.cleanup(self.gpio_num)
