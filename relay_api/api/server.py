@@ -1,18 +1,29 @@
 from flask import Flask, jsonify
+# import json
 
 server = Flask(__name__)
 
 
-def get_relays(relays):
-    return jsonify({"relays": relays}), 200
+def __serialize_relay(relays):
+    if type(relays).__name__ == "relay":
+        return jsonify({"gpio": relays.gpio,
+                           "NC": relays.nc,
+                           "state": relays.state})
+    di = {}
+    for r in relays:
+        di[r] = {"gpio": relays[r].gpio,
+                 "NC": relays[r].nc,
+                 "state": relays[r].state}
+    return jsonify(di)
 
 
-def get_relay(relays, relay_name):
+def get_relays(relays_dict):
+    return __serialize_relay(relays_dict), 200
+
+
+def get_relay(relay):
     code = 200
-    try:
-        relay = relays[relay_name]
-    except KeyError:
+    if not relay:
         code = 404
         return "", code
-
-    return jsonify({"relay": relay}), code
+    return __serialize_relay(relay), code
