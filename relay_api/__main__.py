@@ -8,6 +8,6 @@ def get_relays():
     return api.get_relays(relays)
 
 
-@server.route("/relay-api/relays/<int:relay_id>", methods=["GET"])
-def get_relay(relay_id):
-    return api.get_relay(relays, relay_id)
+@server.route("/relay-api/relays/<relay_name>", methods=["GET"])
+def get_relay(relay_name):
+    return api.get_relay(relays, relay_name)
