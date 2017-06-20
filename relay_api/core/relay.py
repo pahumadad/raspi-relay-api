@@ -1,7 +1,8 @@
 import RPi.GPIO as GPIO
 
+
 class relay():
-    def __init__(self, gpio_num, relay_type="NO"):
+    def __init__(self, gpio_num, NC=False):
         self.gpio_num = gpio_num
         GPIO.setmode(GPIO.BCM)
         try:
@@ -11,7 +12,7 @@ class relay():
             GPIO.setup(self.gpio_num, GPIO.OUT)
         except ValueError:
             raise LookupError("Relay number invalid!")
-        if relay_type == "NC":
+        if NC:
             self.on()
         else:
             self.off()
