@@ -1,13 +1,11 @@
 # List of available relays
-relays = [
-    {
-        "id": 1,
+relays = {
+    "relay_1": {
         "gpio": 20,
-        "name": "relay 1"
+        "NC": False
     },
-    {
-        "id": 2,
+    "relay_2": {
         "gpio": 21,
-        "name": "relay 2"
+        "NC": False
     }
-]
+}
