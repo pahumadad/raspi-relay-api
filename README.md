@@ -20,7 +20,7 @@ Run
 ---
 
 You have to set the Flask app as environment variable.
-`$ export FLASK_APP=$(pwd)/relay_api/api/__main__.py`
+`$ export FLASK_APP=$(pwd)/relay_api/__main__.py`
 
 Next you can run the relay server api with:
 `python -m flask run --host=0.0.0.0 --debugger`
