@@ -1,6 +1,12 @@
 from relay_api.api.server import server
+from relay_api.core.relay import relay
 from relay_api.conf.config import relays
 import relay_api.api.server as api
+
+
+for r in relays:
+    relays[r]["instance"] = relay(relays[r]["gpio"],
+                                  relays[r]["NC"])
 
 
 @server.route("/relay-api/relays", methods=["GET"])
