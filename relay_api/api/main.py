@@ -1,5 +1,5 @@
 from flask import Flask
-import relay_api.api.server as backend
+import relay_api.api.backend as backend
 
 
 server = Flask(__name__)
