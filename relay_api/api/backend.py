@@ -1,4 +1,5 @@
 import json
+import copy
 from relay_api.core.relay import relay
 from relay_api.conf.config import relays
 
@@ -23,10 +24,10 @@ def get_relay(relay_name):
 
 def __get_relay_dict(relay_name=None):
     if relay_name:
-        relay_dict = dict.copy(relays["relay_name"])
+        relay_dict = copy.deepcopy(relays[relay_name])
         del(relay_dict["object"])
         return relay_dict
-    relays_dict = dict.copy(relays)
+    relays_dict = copy.deepcopy(relays)
     for r in relays_dict:
         del(relays_dict[r]["object"])
     return relays_dict
