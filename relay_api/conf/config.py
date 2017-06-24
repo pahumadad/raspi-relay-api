@@ -2,10 +2,12 @@
 relays = {
     "relay_1": {
         "gpio": 20,
-        "NC": False
+        "type": "NO",
+        "desc": "Relay 1 description"
     },
     "relay_2": {
         "gpio": 21,
-        "NC": False
+        "type": "NO",
+        "desc": "Relay 2 description"
     }
 }
