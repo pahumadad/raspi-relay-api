@@ -40,6 +40,14 @@ def set_relay_off(relay_name):
     return json.dumps(relay_dict, indent=4)
 
 
+def delete_relay(relay_name):
+    if relay_name not in relays:
+        return None
+    relays[relay_name]["object"].cleanup()
+    del(relays[relay_name])
+    return json.dumps({relay_name: "deleted!"}, indent=4)
+
+
 def __get_relay_dict(relay_name=None):
     if relay_name:
         relay_dict = copy.deepcopy(relays[relay_name])

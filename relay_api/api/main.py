@@ -35,3 +35,11 @@ def set_relay_off(relay_name):
     if not js:
         return "", 404
     return js, 200
+
+
+@server.route("/relay-api/relays/<relay_name>/delete", methods=["DELETE"])
+def delete_relay(relay_name):
+    js = backend.delete_relay(relay_name)
+    if not js:
+        return "", 404
+    return js, 200
