@@ -1,19 +1,21 @@
-from relay_api.api.server import server
-from relay_api.core.relay import relay
-from relay_api.conf.config import relays
-import relay_api.api.server as api
+from flask import Flask
+import relay_api.api.server as backend
 
 
-relays_dict = {}
-for r in relays:
-    relays_dict[r] = relay(relays[r]["gpio"], relays[r]["NC"])
+server = Flask(__name__)
+
+backend.init_relays()
 
 
-@server.route("/relay-api/relays", methods=["GET"])
-def get_relays():
-    return api.get_relays(relays_dict)
+@server.route("/relay-api/relays/", methods=["GET"])
+def get_all_relays():
+    js = backend.get_all_relays()
+    return js, 200
 
 
 @server.route("/relay-api/relays/<relay_name>", methods=["GET"])
 def get_relay(relay_name):
-    return api.get_relay(relays_dict.get(relay_name, "None"))
+    js = backend.get_relay(relay_name)
+    if not js:
+        return "", 404
+    return js, 200

@@ -1,29 +1,32 @@
-from flask import Flask, jsonify
-# import json
+import json
+from relay_api.core.relay import relay
+from relay_api.conf.config import relays
 
-server = Flask(__name__)
 
-
-def __serialize_relay(relays):
-    if type(relays).__name__ == "relay":
-        return jsonify({"gpio": relays.gpio,
-                           "NC": relays.nc,
-                           "state": relays.state})
-    di = {}
+def init_relays():
     for r in relays:
-        di[r] = {"gpio": relays[r].gpio,
-                 "NC": relays[r].nc,
-                 "state": relays[r].state}
-    return jsonify(di)
+        relays[r]["object"] = relay(relays[r]["gpio"])
+        relays[r]["state"] = relays[r]["object"].get_state()
 
 
-def get_relays(relays_dict):
-    return __serialize_relay(relays_dict), 200
+def get_all_relays():
+    relays_dict = __get_relay_dict()
+    return json.dumps(relays_dict)
 
 
-def get_relay(relay):
-    code = 200
-    if not relay:
-        code = 404
-        return "", code
-    return __serialize_relay(relay), code
+def get_relay(relay_name):
+    if relay_name not in relays:
+        return None
+    relay_dict = __get_relay_dict(relay_name)
+    return json.dumps(relay_dict)
+
+
+def __get_relay_dict(relay_name=None):
+    if relay_name:
+        relay_dict = dict.copy(relays["relay_name"])
+        del(relay_dict["object"])
+        return relay_dict
+    relays_dict = dict.copy(relays)
+    for r in relays_dict:
+        del(relays_dict[r]["object"])
+    return relays_dict
