@@ -11,14 +11,14 @@ def init_relays():
 
 def get_all_relays():
     relays_dict = __get_relay_dict()
-    return json.dumps(relays_dict)
+    return json.dumps(relays_dict, indent=4)
 
 
 def get_relay(relay_name):
     if relay_name not in relays:
         return None
     relay_dict = __get_relay_dict(relay_name)
-    return json.dumps(relay_dict)
+    return json.dumps(relay_dict, indent=4)
 
 
 def __get_relay_dict(relay_name=None):
