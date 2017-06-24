@@ -22,7 +22,7 @@ def get_relay(relay_name):
 
 
 @server.route("/relay-api/relays/<relay_name>/on", methods=["PUT"])
-def get_relay(relay_name):
+def set_relay_on(relay_name):
     js = backend.set_relay_on(relay_name)
     if not js:
         return "", 404
