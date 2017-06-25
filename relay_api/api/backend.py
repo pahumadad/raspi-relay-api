@@ -48,6 +48,27 @@ def delete_relay(relay_name):
     return json.dumps({relay_name: "deleted!"}, indent=4)
 
 
+def create_relay(new_relay):
+    try:
+        r_name = new_relay["name"]
+        r_gpio = new_relay["gpio"]
+        r_type = new_relay["type"]
+        r_desc = new_relay["desc"]
+    except Exception:
+        msg = {"name": "",
+               "gpio": "",
+               "type": "",
+               "desc": ""}
+        return json.dumps(msg, indent=4), True
+    relays[r_name] = {"gpio", r_gpio,
+                      "type", r_type,
+                      "desc", r_desc}
+    relays[r_name]["object"] = relay(relays[r_name]["gpio"])
+    relays[r_name]["state"] = relays[relays[r_name]]["object"].get_state()
+    relay_dict = __get_relay_dict(r_name)
+    return json.dumps(relay_dict, indent=4), False
+
+
 def __get_relay_dict(relay_name=None):
     if relay_name:
         relay_dict = copy.deepcopy(relays[relay_name])

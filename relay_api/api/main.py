@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import relay_api.api.backend as backend
 
 
@@ -42,4 +42,13 @@ def delete_relay(relay_name):
     js = backend.delete_relay(relay_name)
     if not js:
         return "", 404
+    return js, 200
+
+
+@server.route("/relay-api/relays/create", methods=["POST"])
+def create_relay():
+    new_relay = request.get_json()
+    js, error = backend.create_relay(new_relay)
+    if error:
+        return js, 404
     return js, 200
