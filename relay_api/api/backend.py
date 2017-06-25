@@ -64,7 +64,7 @@ def create_relay(new_relay):
                       "type", r_type,
                       "desc", r_desc}
     relays[r_name]["object"] = relay(relays[r_name]["gpio"])
-    relays[r_name]["state"] = relays[relays[r_name]]["object"].get_state()
+    relays[r_name]["state"] = relays[r_name]["object"].get_state()
     relay_dict = __get_relay_dict(r_name)
     return json.dumps(relay_dict, indent=4), False
 
