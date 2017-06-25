@@ -60,7 +60,7 @@ def create_relay(new_relay):
                "type": "",
                "desc": ""}
         return json.dumps(msg, indent=4), True
-    relays[r_name] = {"gpio": r_gpio,
+    relays[r_name] = {"gpio": int(r_gpio),
                       "type": r_type,
                       "desc": r_desc}
     relays[r_name]["object"] = relay(relays[r_name]["gpio"])
