@@ -1,6 +1,7 @@
 import json
 import copy
 from relay_api.core.relay import relay
+from relay_api.core.relay import MAX_RELAY_GPIO
 from relay_api.conf.config import relays
 
 
@@ -55,15 +56,25 @@ def create_relay(new_relay):
         r_type = new_relay["type"]
         r_desc = new_relay["desc"]
     except Exception:
-        msg = {"name": "",
-               "gpio": "",
-               "type": "",
-               "desc": ""}
+        msg = {"name": "Must be unique",
+               "gpio": "Must be an int between 0 - " + str(MAX_RELAY_GPIO),
+               "type": "NO or NC",
+               "desc": "Relay description"}
         return json.dumps(msg, indent=4), True
-    relays[r_name] = {"gpio": int(r_gpio),
-                      "type": r_type,
-                      "desc": r_desc}
-    relays[r_name]["object"] = relay(relays[r_name]["gpio"])
+
+    if r_name in relays:
+        msg = "Relay name is already in use!"
+        return json.dumps({"error": msg}, indent=4), True
+
+    try:
+        r = relay(new_relay["gpio"])
+        relays[r_name] = {"gpio": r_gpio,
+                          "type": r_type,
+                          "desc": r_desc}
+        relays[r_name]["object"] = r
+    except Exception as e:
+        return json.dumps({"error": str(e)}, indent=4), True
+
     relays[r_name]["state"] = relays[r_name]["object"].get_state()
     relay_dict = __get_relay_dict(r_name)
     return json.dumps(relay_dict, indent=4), False
