@@ -1,6 +1,7 @@
 import json
 import copy
 from relay_api.core.relay import relay
+from relay_api.core.relay import MAX_RELAY_GPIO
 from relay_api.conf.config import relays
 
 
@@ -12,14 +13,75 @@ def init_relays():
 
 def get_all_relays():
     relays_dict = __get_relay_dict()
-    return json.dumps(relays_dict, indent=4)
+    return json.dumps(relays_dict, indent=4), 200
 
 
 def get_relay(relay_name):
     if relay_name not in relays:
-        return None
+        msg = "Relay not found!"
+        return json.dumps({"error": msg}, indent=4), 404
     relay_dict = __get_relay_dict(relay_name)
-    return json.dumps(relay_dict, indent=4)
+    return json.dumps(relay_dict, indent=4), 200
+
+
+def set_relay_on(relay_name):
+    if relay_name not in relays:
+        msg = "Relay not found!"
+        return json.dumps({"error": msg}, indent=4), 404
+    relays[relay_name]["object"].on()
+    relays[relay_name]["state"] = relays[relay_name]["object"].get_state()
+    relay_dict = __get_relay_dict(relay_name)
+    return json.dumps(relay_dict, indent=4), 200
+
+
+def set_relay_off(relay_name):
+    if relay_name not in relays:
+        msg = "Relay not found!"
+        return json.dumps({"error": msg}, indent=4), 404
+    relays[relay_name]["object"].off()
+    relays[relay_name]["state"] = relays[relay_name]["object"].get_state()
+    relay_dict = __get_relay_dict(relay_name)
+    return json.dumps(relay_dict, indent=4), 200
+
+
+def delete_relay(relay_name):
+    if relay_name not in relays:
+        msg = "Relay not found!"
+        return json.dumps({"error": msg}, indent=4), 404
+    relays[relay_name]["object"].cleanup()
+    del(relays[relay_name])
+    return json.dumps({relay_name: "deleted!"}, indent=4), 200
+
+
+def create_relay(new_relay):
+    try:
+        r_name = new_relay["name"]
+        r_gpio = new_relay["gpio"]
+        r_type = new_relay["type"]
+        r_desc = new_relay["desc"]
+    except Exception:
+        msg = {"name": "Must be unique",
+               "gpio": "Must be an int between 0 - " + str(MAX_RELAY_GPIO),
+               "type": "NO or NC",
+               "desc": "Relay description"}
+        return json.dumps(msg, indent=4), 404
+
+    if r_name in relays:
+        msg = "Relay name is already in use!"
+        return json.dumps({"error": msg}, indent=4), 409
+
+    try:
+        r = relay(new_relay["gpio"])
+        relays[r_name] = {"gpio": r_gpio,
+                          "type": r_type,
+                          "desc": r_desc}
+        relays[r_name]["object"] = r
+    except Exception as e:
+        return json.dumps({"error": str(e)}, indent=4), 409
+
+    relays[r_name]["state"] = relays[r_name]["object"].get_state()
+    relay_dict = __get_relay_dict(r_name)
+    return json.dumps(relay_dict, indent=4), 201
 
 
 def __get_relay_dict(relay_name=None):
